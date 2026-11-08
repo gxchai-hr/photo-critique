@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<meta name="theme-color" content="#ffffff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="你拍我评">
+<title>你拍我评</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div id="loginScreen" class="login-screen hidden">
+  <h1>你拍我评</h1>
+  <p>请输入访问口令。后台配置需要管理口令。</p>
+  <div class="field" style="margin-top:0">
+    <input type="password" id="loginPassword" placeholder="访问口令或管理口令" autocomplete="current-password">
+  </div>
+  <button id="loginBtn" class="btn btn-primary btn-block">进入</button>
+  <p class="hint">口令由部署者在 .env 中设置</p>
+</div>
+
+<div id="appShell" class="shell hidden">
+  <header class="topbar">
+    <div class="brand">你拍我评</div>
+    <div class="top-actions">
+      <a id="adminLink" href="/admin" class="link-btn hidden">后台</a>
+      <button id="logoutBtn" class="plain-btn">退出</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="screenUpload" class="screen">
+      <p class="lead">只点评真实拍摄的摄影作品</p>
+      <div id="dropzone" class="dropzone">
+        <input type="file" id="fileInput" accept="image/*" hidden>
+        <div class="camera"></div>
+        <p>点这里选择一张照片</p>
+        <small>JPEG / HEIC / PNG / WebP，单张 20MB 以内</small>
+      </div>
+      <div id="previewWrap" class="preview hidden">
+        <img id="previewImg" alt="待点评照片预览">
+        <div class="preview-bar"><span id="fileName"></span><button id="clearBtn" class="plain-btn">移除</button></div>
+      </div>
+      <div class="field">
+        <label for="titleInput">作品标题（选填）</label>
+        <input type="text" id="titleInput" maxlength="60" placeholder="不填则跳过标题分析">
+      </div>
+      <button id="submitBtn" class="btn btn-primary btn-block">开始点评</button>
+      <p class="hint">照片与点评结果都不写入磁盘，处理完即丢弃</p>
+    </section>
+
+    <section id="screenLoading" class="screen hidden">
+      <p class="lead">正在点评，请保持页面打开</p>
+      <div id="loadPreview" class="preview hidden"><img id="loadImg" alt="照片预览"></div>
+      <div class="steps">
+        <div class="step"><span class="dot done" id="dot0"></span>图片预处理<span id="step0">完成</span></div>
+        <div class="step"><span class="dot active" id="dot1"></span>作品类型识别<span id="step1">进行中</span></div>
+        <div class="step"><span class="dot" id="dot2"></span>生成艺术点评<span id="step2">等待</span></div>
+      </div>
+      <div class="progress"><div id="progressBar"></div></div>
+      <p class="wait-note">通常需要 20–40 秒，取决于模型速度</p>
+      <button id="cancelBtn" class="btn btn-block">取消</button>
+    </section>
+
+    <section id="screenResult" class="screen hidden"></section>
+
+    <section id="screenReject" class="screen hidden">
+      <div class="banner banner-red" style="margin-top:0">
+        <strong>这不是摄影作品</strong>
+        <p id="rejectReason"></p>
+      </div>
+      <div class="section">
+        <p class="section-title">本工具不点评</p>
+        <p class="section-body">截图、插画与海报、设计稿、文档扫描、商品图、纯文字图。疑似 AI 生成的照片仍会点评，但会按规则降档。</p>
+      </div>
+      <button id="retryFromReject" class="btn btn-primary btn-block">换一张</button>
+    </section>
+  </main>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+<script src="/static/app.js"></script>
+</body>
+</html>

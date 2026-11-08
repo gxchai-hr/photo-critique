@@ -1,0 +1,20 @@
+# 本地运行数据、口令与诊断脚本（含 Lucky 后台口令、webtop 凭据、NAS 内网信息）
+data/
+.preview-data/
+.local-data/
+.env*
+!.env.example
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.DS_Store
+Thumbs.db
+
+# 本机 NAS 部署/验收脚本：写死内网地址与无认证 Docker API，不进版本库
+deploy_nas.py
+tests/smoke_nas.py
+
+# Lucky 规则备份含内网域名/IP，不进版本库
+lucky-*-backup.json

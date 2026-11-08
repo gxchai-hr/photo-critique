@@ -1,0 +1,27 @@
+# NAS 部署：把项目目录整个拷到 NAS，在同目录放好 .env，然后 docker compose up -d --build
+# 公网访问请务必用 NAS 反向代理套 HTTPS，并把 .env 里 COOKIE_SECURE 改为 1。
+services:
+  photo-critique:
+    build: .
+    image: photo-critique:1.0
+    container_name: photo-critique
+    restart: unless-stopped
+# NAS 的 8080 通常已被 QTS 管理界面占用，这里改用 18080 对外，容器内仍是 8080。
+# 需要换端口只改下面这一行左侧；公网请走 NAS 反向代理 + HTTPS，并把 COOKIE_SECURE 设为 1。
+    ports:
+      - "18080:8080"
+    environment:
+      ACCESS_PASSWORD: ${ACCESS_PASSWORD:?请在 .env 中设置 ACCESS_PASSWORD}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?请在 .env 中设置 ADMIN_PASSWORD}
+      COOKIE_SECURE: ${COOKIE_SECURE:-0}
+      TZ: Asia/Shanghai
+    volumes:
+      - photo-data:/app/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/api/health', timeout=3)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  photo-data:
